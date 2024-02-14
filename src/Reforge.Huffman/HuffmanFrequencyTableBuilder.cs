@@ -1,5 +1,8 @@
-namespace Reforge.Huffman;
+namespace ReForge.Huffman;
 
+/// <summary>
+/// The HuffmanFrequencyTableBuilder class is used to build a frequency table for Huffman coding.
+/// </summary>
 public class HuffmanFrequencyTableBuilder
 {
     private string _eosCharacter = string.Empty;
@@ -7,61 +10,81 @@ public class HuffmanFrequencyTableBuilder
     private double _lengthWeight = 1.0;
     private IEnumerable<string> _sequences = Enumerable.Empty<string>();
     
+    /// <summary>
+    /// Sets the maximum length of n-grams to be considered in the frequency table.
+    /// </summary>
+    /// <param name="maxNGramLength">The maximum length of n-grams.</param>
+    /// <returns>The current HuffmanFrequencyTableBuilder instance.</returns>
     public HuffmanFrequencyTableBuilder WithMaxNGramLength(int maxNGramLength)
     {
         _maxNGramLength = maxNGramLength;
         return this;
     }
     
+    /// <summary>
+    /// Sets the sequences to be considered in the frequency table.
+    /// </summary>
+    /// <param name="sequences">The sequences to be considered.</param>
+    /// <returns>The current HuffmanFrequencyTableBuilder instance.</returns>
     public HuffmanFrequencyTableBuilder WithSequences(IEnumerable<string> sequences)
     {
         _sequences = sequences;
         return this;
     }
     
+    /// <summary>
+    /// Sets the weight of the length of n-grams in the frequency table.
+    /// </summary>
+    /// <param name="lengthWeight">The weight of the length of n-grams.</param>
+    /// <returns>The current HuffmanFrequencyTableBuilder instance.</returns>
     public HuffmanFrequencyTableBuilder WithLengthWeight(double lengthWeight)
     {
         _lengthWeight = lengthWeight;
         return this;
     }
     
-    public HuffmanFrequencyTableBuilder WithNullCharacter()
+    /// <summary>
+    /// Sets the character to be used as the end of sequence marker in the frequency table.
+    /// </summary>
+    /// <param name="eosCharacter">The end of sequence character.</param>
+    /// <returns>The current HuffmanFrequencyTableBuilder instance.</returns>
+    public HuffmanFrequencyTableBuilder WithEndOfSequenceCharacter(string eosCharacter)
     {
         _eosCharacter = eosCharacter;
         return this;
     }
     
+    /// <summary>
+    /// Builds the Huffman frequency table based on the provided parameters.
+    /// </summary>
+    /// <returns>The built Huffman frequency table.</returns>
     public HuffmanFrequencyTable Build()
     {
         var result = GenerateFrequencyTable();
         result = OptimiseFrequencyTable(result);
-        
-        // ... implementation ...
-        
         return result;
     }
 
+    /// <summary>
+    /// Generates a frequency table based on the sequences and parameters provided.
+    /// </summary>
+    /// <returns>A HuffmanFrequencyTable with the frequencies of n-grams in the sequences.</returns>
     private HuffmanFrequencyTable GenerateFrequencyTable()
     {
         var result = new HuffmanFrequencyTable();
         if (!string.IsNullOrEmpty(_eosCharacter))
             result[_eosCharacter] = 0;
 
-        // Generate all possible ngrams and count their frequencies
         foreach (var sequence in _sequences)
         {
-            for (int ngramLength = _maxNGramLength; ngramLength >= 1; ngramLength--)
+            for (var ngramLength = _maxNGramLength; ngramLength >= 1; ngramLength--)
             {
-                for (int i = 0; i <= sequence.Length - ngramLength; i++)
+                for (var i = 0; i <= sequence.Length - ngramLength; i++)
                 {
                     var ngram = sequence.Substring(i, ngramLength);
-                    if (result.ContainsKey(ngram))
+                    if (!result.TryAdd(ngram, 1))
                     {
                         result[ngram]++;
-                    }
-                    else
-                    {
-                        result[ngram] = 1;
                     }
                 }
             }
@@ -69,15 +92,17 @@ public class HuffmanFrequencyTableBuilder
             if (!string.IsNullOrEmpty(_eosCharacter))
                 result[_eosCharacter]++;
         }
-
         
         return result;
     }
     
+    /// <summary>
+    /// Optimises the frequency table by sorting n-grams by a weight function
+    /// </summary>
+    /// <param name="frequencyTable">The initial frequency table to be optimised.</param>
+    /// <returns>An optimised HuffmanFrequencyTable.</returns>
     private HuffmanFrequencyTable OptimiseFrequencyTable(HuffmanFrequencyTable frequencyTable)
     {
-        
-        //var sortedNGrams = frequencyTable.OrderByDescending(nf => nf.Value).ToList();
         var sortedNGrams = frequencyTable
             .OrderByDescending(nf => CalculateWeight(nf.Key.Length, nf.Value))
             .ToList();
@@ -106,16 +131,11 @@ public class HuffmanFrequencyTableBuilder
                 }
             }
 
-            // Add all of the ngrams from ngramRepresentation to the result
             foreach (var ngram in ngramRepresentation)
             {
-                if (result.ContainsKey(ngram))
+                if (!result.TryAdd(ngram, 1))
                 {
                     result[ngram]++;
-                }
-                else
-                {
-                    result[ngram] = 1;
                 }
             }
         }
@@ -123,6 +143,12 @@ public class HuffmanFrequencyTableBuilder
         return result;
     }
     
+    /// <summary>
+    /// Calculates the weight of an n-gram based on its length and frequency.
+    /// </summary>
+    /// <param name="length">The length of the n-gram.</param>
+    /// <param name="frequency">The frequency of the n-gram.</param>
+    /// <returns>The calculated weight of the n-gram.</returns>
     private double CalculateWeight(int length, double frequency)
     {
         return length * _lengthWeight + frequency;
