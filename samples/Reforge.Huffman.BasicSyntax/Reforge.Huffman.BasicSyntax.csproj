@@ -12,10 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Reforge.Huffman\Reforge.Huffman.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Content Include="..\..\data\collector_numbers.json">
         <Link>collector_numbers.json</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -24,6 +20,10 @@
         <Link>set_codes.json</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\ReForge.Huffman\ReForge.Huffman.csproj" />
     </ItemGroup>
 
 </Project>
