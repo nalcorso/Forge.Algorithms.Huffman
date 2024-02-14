@@ -2,7 +2,7 @@ namespace Reforge.Huffman;
 
 public class HuffmanFrequencyTableBuilder
 {
-    private bool _includeNullCharacter = false;
+    private string _eosCharacter = string.Empty;
     private int _maxNGramLength = 1;
     private double _lengthWeight = 1.0;
     private IEnumerable<string> _sequences = Enumerable.Empty<string>();
@@ -27,7 +27,7 @@ public class HuffmanFrequencyTableBuilder
     
     public HuffmanFrequencyTableBuilder WithNullCharacter()
     {
-        _includeNullCharacter = true;
+        _eosCharacter = eosCharacter;
         return this;
     }
     
@@ -44,8 +44,8 @@ public class HuffmanFrequencyTableBuilder
     private HuffmanFrequencyTable GenerateFrequencyTable()
     {
         var result = new HuffmanFrequencyTable();
-        if (_includeNullCharacter)
-            result["\0"] = 0; // Add the null character to the frequency table
+        if (!string.IsNullOrEmpty(_eosCharacter))
+            result[_eosCharacter] = 0;
 
         // Generate all possible ngrams and count their frequencies
         foreach (var sequence in _sequences)
@@ -66,8 +66,8 @@ public class HuffmanFrequencyTableBuilder
                 }
             }
             
-            if (_includeNullCharacter)
-                result["\0"]++; // Add the null character to the frequency table
+            if (!string.IsNullOrEmpty(_eosCharacter))
+                result[_eosCharacter]++;
         }
 
         
@@ -83,8 +83,9 @@ public class HuffmanFrequencyTableBuilder
             .ToList();
        
         var result = new HuffmanFrequencyTable();
-        if (_includeNullCharacter)
-            result["\0"] = frequencyTable["\0"]; // Add the null character to the frequency table
+        
+        if (!string.IsNullOrEmpty(_eosCharacter))
+            result[_eosCharacter] = frequencyTable[_eosCharacter];
         
         foreach (var sequence in _sequences)
         {
