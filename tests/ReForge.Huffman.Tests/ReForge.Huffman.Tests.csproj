@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\ReForge.Huffman\ReForge.Huffman.csproj" />
+      <ProjectReference Include="..\..\src\Forge.Algorithms.HuffmanCoding\Forge.Algorithms.HuffmanCoding.csproj" />
     </ItemGroup>
 
 </Project>

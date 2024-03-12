@@ -1,4 +1,4 @@
-namespace ReForge.Huffman;
+namespace Forge.Algorithms.HuffmanCoding;
 
 /// <summary>
 /// A builder class for creating a HuffmanEncoder.

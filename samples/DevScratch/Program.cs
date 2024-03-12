@@ -3,7 +3,7 @@
 using System.Text;
 using System.Text.Json;
 using Dumpify;
-using ReForge.Huffman;
+using Forge.Algorithms.HuffmanCoding;
 
 Console.OutputEncoding = Encoding.UTF8;
 

@@ -1,4 +1,4 @@
-namespace ReForge.Huffman;
+namespace Forge.Algorithms.HuffmanCoding;
 
 /// <summary>
 /// Represents a node in a Huffman tree.

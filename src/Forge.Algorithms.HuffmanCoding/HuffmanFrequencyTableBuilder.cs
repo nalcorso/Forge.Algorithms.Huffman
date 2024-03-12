@@ -1,4 +1,4 @@
-namespace ReForge.Huffman;
+namespace Forge.Algorithms.HuffmanCoding;
 
 /// <summary>
 /// The HuffmanFrequencyTableBuilder class is used to build a frequency table for Huffman coding.

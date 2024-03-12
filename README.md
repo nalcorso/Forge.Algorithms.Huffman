@@ -1,10 +1,10 @@
-# ReForge.Huffman
+# Forge.Algorithms.HuffmanCoding
 
-ReForge.Huffman is a C# library for encoding and decoding strings using Huffman coding. It provides a flexible and efficient way to compress and decompress data, and is particularly useful for applications that need to handle large amounts of text data.
+Forge.Algorithms.HuffmanCoding is a C# library for encoding and decoding strings using Huffman coding. It provides a flexible and efficient way to compress and decompress data, and is particularly useful for applications that need to handle large amounts of text data.
 
 ## Installation
 
-To install the ReForge.Huffman library, you can download the source code from this repository and build it using your preferred C# compiler.
+To install the Forge.Algorithms.HuffmanCoding library, you can download the source code from this repository and build it using your preferred C# compiler.
 
 ## Usage
 
