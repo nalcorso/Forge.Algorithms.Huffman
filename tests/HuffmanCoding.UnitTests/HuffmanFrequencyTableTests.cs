@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ReForge.Huffman.Tests;
+namespace HuffmanCoding.UnitTests;
 
 public class HuffmanFrequencyTableTests
 {

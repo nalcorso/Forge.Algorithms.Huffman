@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Algorithms.HuffmanCod
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9ABCCD3C-5578-4ECC-A62D-9835337542BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReForge.Huffman.Tests", "tests\ReForge.Huffman.Tests\ReForge.Huffman.Tests.csproj", "{98AD859A-6337-4E1F-9139-AB4ADED03D38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuffmanCoding.UnitTests", "tests\HuffmanCoding.UnitTests\HuffmanCoding.UnitTests.csproj", "{98AD859A-6337-4E1F-9139-AB4ADED03D38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

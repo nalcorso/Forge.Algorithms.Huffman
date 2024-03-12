@@ -1,4 +1,4 @@
-﻿namespace ReForge.Huffman.Tests;
+﻿namespace HuffmanCoding.UnitTests;
 
 public class HuffmanEncoderTests
 {
