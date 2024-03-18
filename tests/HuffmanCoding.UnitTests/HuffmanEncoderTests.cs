@@ -2,17 +2,6 @@
 
 public class HuffmanEncoderTests
 {
-    private readonly HuffmanEncoder _encoder;
-
-    public HuffmanEncoderTests()
-    {
-        _encoder = new HuffmanEncoderBuilder()
-            .WithAsciiFrequencyTable()
-            .WithEndOfSequenceCharacter("\0")
-            .WithAlignToByteSize(true)
-            .Build();    
-    }
-
     [Fact]
     public void Encode_ShouldReturnEncodedByteArray_WhenInputIsValid()
     {
@@ -20,7 +9,7 @@ public class HuffmanEncoderTests
         var input = "Hello, World!";
 
         // Act
-        var result = _encoder.Encode(input);
+        var result = HuffmanEncoder.Encode(input);
 
         // Assert
         result.Should().NotBeNull();
@@ -31,10 +20,10 @@ public class HuffmanEncoderTests
     public void Decode_ShouldReturnDecodedString_WhenInputIsValid()
     {
         // Arrange
-        var input = _encoder.Encode("Hello, World!");
+        var input = HuffmanEncoder.Encode("Hello, World!");
 
         // Act
-        var result = _encoder.Decode(input);
+        var result = HuffmanEncoder.Decode(input);
 
         // Assert
         result.Should().Be("Hello, World!");
@@ -47,7 +36,7 @@ public class HuffmanEncoderTests
         var input = "Hello, World!";
 
         // Act
-        var result = _encoder.CanEncode(input);
+        var result = HuffmanEncoder.CanEncode(input);
 
         // Assert
         result.Should().BeTrue();
@@ -60,7 +49,7 @@ public class HuffmanEncoderTests
         var input = "This string contains characters not in the ASCII table. 😊";
 
         // Act
-        var result = _encoder.CanEncode(input);
+        var result = HuffmanEncoder.CanEncode(input);
 
         // Assert
         result.Should().BeFalse();
@@ -73,7 +62,7 @@ public class HuffmanEncoderTests
         var input = "Hello, World!";
 
         // Act
-        var result = _encoder.Measure(input);
+        var result = HuffmanEncoder.Measure(input);
 
         // Assert
         result.Should().BeGreaterThan(0);
@@ -86,17 +75,17 @@ public class HuffmanEncoderTests
         var input = (string?)null;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => _encoder.Encode(input!));
+        Assert.Throws<ArgumentNullException>(() => HuffmanEncoder.Encode(input!));
     }
 
     [Fact]
     public void Decode_ShouldThrowException_WhenInputIsNull()
     {
         // Arrange
-        var input = (byte[])null;
+        var input = (string)null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => _encoder.Decode(input));
+        Assert.Throws<ArgumentNullException>(() => HuffmanEncoder.Decode(input));
     }
     
     [Fact]
@@ -106,7 +95,7 @@ public class HuffmanEncoderTests
         var input = "";
 
         // Act
-        var result = _encoder.CanEncode(input);
+        var result = HuffmanEncoder.CanEncode(input);
 
         // Assert
         result.Should().BeTrue();
@@ -116,10 +105,10 @@ public class HuffmanEncoderTests
     public void CanEncode_ShouldReturnFalse_WhenInputIsNull()
     {
         // Arrange
-        var input = (string?)null;
+        var input = (string)null!;
 
         // Act
-        var result = _encoder.CanEncode(input!);
+        var result = HuffmanEncoder.CanEncode(input!);
 
         // Assert
         result.Should().BeFalse();
@@ -129,10 +118,10 @@ public class HuffmanEncoderTests
     public void Measure_ShouldThrowException_WhenInputIsNull()
     {
         // Arrange
-        var input = (string?)null;
+        var input = (string)null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => _encoder.Measure(input));
+        Assert.Throws<ArgumentNullException>(() => HuffmanEncoder.Measure(input));
     }
 
     [Fact]
@@ -142,8 +131,8 @@ public class HuffmanEncoderTests
         var input = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         // Act
-        var encoded = _encoder.Encode(input);
-        var decoded = _encoder.Decode(encoded);
+        var encoded = HuffmanEncoder.Encode(input);
+        var decoded = HuffmanEncoder.Decode(encoded);
 
         // Assert
         decoded.Should().Be(input);
@@ -152,12 +141,13 @@ public class HuffmanEncoderTests
     [Fact]
     public void Encode_ShouldReturnExpectedString_WhenInputIsEmpty()
     {
+        //FIXME: This test is a placeholder until I formalise the EOS sequence handling
         // Arrange
         var input = "";
-        var expected = new byte[] { 0x0B, 0xE0 };
+        var expected = "D007";
 
         // Act
-        var result = _encoder.Encode(input);
+        var result = HuffmanEncoder.Encode(input);
         
         // Assert
         result.Should().BeEquivalentTo(expected);
@@ -167,10 +157,10 @@ public class HuffmanEncoderTests
     public void Decode_ReturnEmptyString_WhenInputIsEmpty()
     {
         // Arrange
-        var input = new byte[0];
+        var input = string.Empty;
 
         // Act
-        var result = _encoder.Decode(input);
+        var result = HuffmanEncoder.Decode(input);
         
         // Assert
         result.Should().BeEmpty();
@@ -183,8 +173,8 @@ public class HuffmanEncoderTests
         var input = "   ";
 
         // Act
-        var encoded = _encoder.Encode(input);
-        var decoded = _encoder.Decode(encoded);
+        var encoded = HuffmanEncoder.Encode(input);
+        var decoded = HuffmanEncoder.Decode(encoded);
 
         // Assert
         decoded.Should().Be(input);
@@ -197,7 +187,7 @@ public class HuffmanEncoderTests
         var input = "   ";
 
         // Act
-        var result = _encoder.Encode(input);
+        var result = HuffmanEncoder.Encode(input);
 
         // Assert
         result.Should().NotBeNull();
@@ -208,10 +198,10 @@ public class HuffmanEncoderTests
     public void Decode_ShouldReturnNonNullAndNonEmpty_WhenInputIsWhitespace()
     {
         // Arrange
-        var input = _encoder.Encode("   ");
+        var input = HuffmanEncoder.Encode("   ");
 
         // Act
-        var result = _encoder.Decode(input);
+        var result = HuffmanEncoder.Decode(input);
 
         // Assert
         result.Should().NotBeNull();

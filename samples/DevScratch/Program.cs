@@ -5,10 +5,47 @@ using System.Text.Json;
 using Dumpify;
 using Forge.Algorithms.HuffmanCoding;
 
+
 Console.OutputEncoding = Encoding.UTF8;
+Console.WriteLine("Forge.Algorithms.HuffmanCoding - DevScratch");
 
-Console.WriteLine("ReForge Huffman Encoder/Decoder");
+var inputString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
+var options = new HuffmanEncoderOptions()
+{
+    OutputEncoding = HuffmanStringEncoding.Base64
+};
+
+var enc = HuffmanEncoder.Encode(inputString, options);
+var dec = HuffmanEncoder.Decode(enc, options);
+PrintStatus(inputString, enc, dec);
+
+void PrintStatus(string original, string encoded, string decoded)
+{
+    Console.WriteLine($"Input   : {original}");
+    Console.WriteLine($"Encoded : {encoded}");
+    Console.WriteLine($"Decoded : {decoded}");
+    Console.WriteLine($"Status  : {(original.CompareTo(decoded) == 0?"Success":"Failed")}");
+    if (original.CompareTo(decoded) != 0)
+    {
+        int length = Math.Min(original.Length, decoded.Length);
+
+        for (int i = 0; i < length; i++)
+        {
+            if (original[i] != decoded[i])
+            {
+                Console.WriteLine($"Difference at position {i}: '{original[i]}' vs '{decoded[i]}'");
+            }
+        }
+
+        if (original.Length != decoded.Length)
+        {
+            Console.WriteLine($"Strings have different lengths: {original.Length} vs {decoded.Length}");
+        }
+    }
+}
+
+#if false
 var data_sources = new string[] { "collector_numbers.json", "set_codes.json" };
 var sequences = new List<string>();
 foreach (var source in data_sources)
@@ -73,5 +110,4 @@ foreach (var sequence in sequences)
         return;
     }
 }
-
-
+#endif

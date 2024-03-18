@@ -6,76 +6,69 @@ namespace Forge.Algorithms.HuffmanCoding;
 /// <summary>
 /// The HuffmanEncoder class is used for encoding and decoding strings using Huffman coding.
 /// </summary>
-public class HuffmanEncoder
+public static class HuffmanEncoder
 {
-    private readonly HuffmanNode _root;
-    
-    /// <summary>
-    /// Gets or initializes the fixed length in bits for the encoded string.
-    /// </summary>
-    public int FixedLengthInBits { get; init; }
-    
-    /// <summary>
-    /// Gets or initializes the end of sequence character for the encoded string.
-    /// </summary>
-    public string EndOfSequence { get; init; } = string.Empty;
-    
-    /// <summary>
-    /// Gets or initializes a value indicating whether the output should be aligned to byte size.
-    /// </summary>
-    public bool AlignToByteSize { get; init; } = false;
-    
-    /// <summary>
-    /// Initializes a new instance of the HuffmanEncoder class.
-    /// </summary>
-    /// <param name="root">The root node of the Huffman tree.</param>
-    public HuffmanEncoder(HuffmanNode root)
-    {
-        _root = root;
-    }
-    
-    /// <summary>
-    /// Creates a new HuffmanEncoderBuilder.
-    /// </summary>
-    /// <returns>A new HuffmanEncoderBuilder.</returns>
-    public static HuffmanEncoderBuilder Create()
-    {
-        return new HuffmanEncoderBuilder();
-    }
-    
     /// <summary>
     /// Encodes a string into a byte array using Huffman coding.
     /// </summary>
     /// <param name="input">The string to encode.</param>
+    /// <param name="options"></param>
     /// <returns>The encoded string as a byte array.</returns>
-    public byte[] Encode(string input)
+    public static string Encode(string input, HuffmanEncoderOptions? options = null)
     {
-        return BinToHex(EncodeBitArray(input));
+        ArgumentNullException.ThrowIfNull(input, nameof(input));
+        options ??= new HuffmanEncoderOptions();
+        
+        var encodedBits = EncodeBitArray(input, options);
+        return options.OutputEncoding switch
+        {
+            HuffmanStringEncoding.Auto => HuffmanOutputEncoder.Auto.Encode(encodedBits),
+            HuffmanStringEncoding.Bin => HuffmanOutputEncoder.Bin.Encode(encodedBits),
+            HuffmanStringEncoding.Hex => HuffmanOutputEncoder.Hex.Encode(encodedBits),
+            HuffmanStringEncoding.Base64 => HuffmanOutputEncoder.Base64.Encode(encodedBits),
+            _ => throw new ArgumentOutOfRangeException(nameof(options))
+        };
     }
-    
+
+
     /// <summary>
     /// Decodes a byte array into a string using Huffman coding.
     /// </summary>
     /// <param name="input">The byte array to decode.</param>
+    /// <param name="options"></param>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     /// <returns>The decoded string.</returns>
-    public string Decode(byte[] input)
+    public static string Decode(string input, HuffmanEncoderOptions? options = null)
     {
-        return DecodeBitArray(HexToBin(input));
+        options ??= new HuffmanEncoderOptions();
+
+        var encodedBits = options.InputEncoding switch
+        {
+            HuffmanStringEncoding.Auto => HuffmanOutputEncoder.Auto.Decode(input),
+            HuffmanStringEncoding.Bin => HuffmanOutputEncoder.Bin.Decode(input),
+            HuffmanStringEncoding.Hex => HuffmanOutputEncoder.Hex.Decode(input),
+            HuffmanStringEncoding.Base64 => HuffmanOutputEncoder.Base64.Decode(input),
+            _ => throw new ArgumentOutOfRangeException(nameof(options))
+        };
+        return DecodeBitArray(encodedBits, options);
     }
-    
+
     /// <summary>
     /// Checks if the input string can be encoded using the current Huffman tree.
     /// </summary>
     /// <param name="input">The string to check.</param>
+    /// <param name="options"></param>
     /// <returns>True if the string can be encoded, false otherwise.</returns>
-    public bool CanEncode(string input)
+    public static bool CanEncode(string? input, HuffmanEncoderOptions? options = null)
     {
         if (input is null)
         {
             return false;
         }
         
-        var huffmanCode = GenerateHuffmanCode(_root);
+        options ??= new HuffmanEncoderOptions();
+        
+        var huffmanCode = options._huffmanCode;
         foreach (var character in input)
         {
             if (!huffmanCode.ContainsKey(character.ToString()))
@@ -86,54 +79,54 @@ public class HuffmanEncoder
         
         return true;
     }
-    
+
     /// <summary>
     /// Measures the length of the encoded string in bits.
     /// </summary>
     /// <param name="input">The string to measure.</param>
+    /// <param name="options"></param>
     /// <returns>The length of the encoded string in bits.</returns>
     /// <remarks>Ignores the FixedLengthInBits property when measuring the length of the encoded string.</remarks>
-    public int Measure(string input)
+    public static int Measure(string input, HuffmanEncoderOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(input, nameof(input));
         
-        var huffmanCode = GenerateHuffmanCode(_root);
+        options ??= new HuffmanEncoderOptions();
+        
+        var huffmanCode = options._huffmanCode;
         var result = 0;
         foreach (var character in input)
         {
             result += huffmanCode[character.ToString()].Length;
         }
         
-        if (!string.IsNullOrEmpty(EndOfSequence))
+        if (!string.IsNullOrEmpty(options.EndOfSequence))
         {
-            result += huffmanCode[EndOfSequence].Length;
+            result += huffmanCode[options.EndOfSequence].Length;
         }
         
         return result;
     }
-    
+
+
     /// <summary>
     /// Encodes a string into a BitArray using Huffman coding.
     /// </summary>
     /// <param name="input">The string to encode.</param>
+    /// <param name="options"></param>
     /// <returns>The encoded string as a BitArray.</returns>
-    private BitArray EncodeBitArray(string input)
+    private static BitArray EncodeBitArray(string input, HuffmanEncoderOptions options)
     {
         ArgumentNullException.ThrowIfNull(input, nameof(input));
         
-        if ((AlignToByteSize || FixedLengthInBits > 0) && string.IsNullOrEmpty(EndOfSequence))
+        if (options.IsByteAlignmentRequired && string.IsNullOrEmpty(options.EndOfSequence))
         {
             throw new InvalidOperationException("The EndOfSequence property must be set when the AlignToByteSize or FixedLengthInBits property is set.");
         }
+
+        var huffmanCode = options._huffmanCode;//GenerateHuffmanCode(options._root);
         
-        if (AlignToByteSize && FixedLengthInBits % 8 != 0)
-        {
-            throw new InvalidOperationException("The AlignToByteSize property cannot be true when the FixedLengthInBits property is not a multiple of 8.");
-        }
-        
-        var huffmanCode = GenerateHuffmanCode(_root);
-        
-        if (!string.IsNullOrEmpty(EndOfSequence) && !huffmanCode.ContainsKey(EndOfSequence))
+        if (!string.IsNullOrEmpty(options.EndOfSequence) && !huffmanCode.ContainsKey(options.EndOfSequence))
         {
             throw new InvalidOperationException("The EndOfSequence property must be in the Huffman tree.");
         }
@@ -149,16 +142,16 @@ public class HuffmanEncoder
             }
         }
         
-        if (!string.IsNullOrEmpty(EndOfSequence))
+        if (!string.IsNullOrEmpty(options.EndOfSequence))
         {
-            var eosArray = huffmanCode[EndOfSequence];
+            var eosArray = huffmanCode[options.EndOfSequence];
             foreach (bool bit in eosArray)
             {
                 result.Add(bit);
             }
         }
         
-        if (AlignToByteSize)
+        if (options.IsByteAlignmentRequired)
         {
             while (result.Count % 8 != 0)
             {
@@ -166,9 +159,9 @@ public class HuffmanEncoder
             }
         }
         
-        if (FixedLengthInBits > 0)
+        if (options.FixedLengthOutputInBytes > 0)
         {
-            while (result.Count < FixedLengthInBits)
+            while (result.Count < (options.FixedLengthOutputInBytes * 8))
             {
                 result.Add(false);
             }
@@ -176,136 +169,33 @@ public class HuffmanEncoder
 
         return new BitArray(result.ToArray());
     }
-    
+
     /// <summary>
     /// Decodes a BitArray into a string using Huffman coding.
     /// </summary>
     /// <param name="input">The BitArray to decode.</param>
+    /// <param name="options"></param>
     /// <returns>The decoded string.</returns>
-    private string DecodeBitArray(BitArray input)
+    private static string DecodeBitArray(BitArray input, HuffmanEncoderOptions options)
     {
         var result = new StringBuilder();
-        var currentNode = _root;
+        var currentNode = options._root;
 
         foreach (bool bit in input)
         {
             currentNode = bit ? currentNode.Right : currentNode.Left;
 
-            if (currentNode.IsLeaf)
+            if (currentNode is not null && currentNode.IsLeaf)
             {
-                if (!string.IsNullOrEmpty(EndOfSequence) && currentNode.Sequence == EndOfSequence)
+                if (!string.IsNullOrEmpty(options.EndOfSequence) && currentNode.Sequence == options.EndOfSequence)
                     break;
                 
                 result.Append(currentNode.Sequence);
-                currentNode = _root;
+                currentNode = options._root;
             }
         }
 
         return result.ToString();
     }
-
-    /// <summary>
-    /// Converts a BitArray into a byte array.
-    /// </summary>
-    /// <param name="input">The BitArray to convert.</param>
-    /// <returns>The converted byte array.</returns>
-    private static byte[] BinToHex(BitArray input)
-    {
-        if (input.Length % 8 != 0)
-            throw new ArgumentException("The length of the BitArray must be a multiple of 8.", nameof(input));
-        
-        byte[] byteArray = new byte[input.Length / 8];
-        for (int i = 0; i < input.Length; i += 8)
-        {
-            byte byteValue = 0;
-            for (int j = 0; j < 8; j++)
-            {
-                byteValue += (input[i + j] ? (byte)(1 << (7 - j)) : (byte)0);
-            }
-            byteArray[i / 8] = byteValue;
-        }
-
-        return byteArray;
-    }
-
-    /// <summary>
-    /// Converts a byte array into a BitArray.
-    /// </summary>
-    /// <param name="input">The byte array to convert.</param>
-    /// <returns>The converted BitArray.</returns>
-    private static BitArray HexToBin(byte[] input)
-    {
-        string hex = BitConverter.ToString(input).Replace("-", "");
-        var binary = new StringBuilder();
-        foreach (var hexDigit in hex)
-        {
-            binary.Append(Convert.ToString(Convert.ToInt32(hexDigit.ToString(), 16), 2).PadLeft(4, '0'));
-        }
-
-        var bitArray = new BitArray(binary.Length);
-        for (int i = 0; i < binary.Length; i++)
-        {
-            bitArray[i] = binary[i] == '1';
-        }
-
-        return bitArray;
-    }
     
-    /// <summary>
-    /// Generates a Huffman code for a given HuffmanNode.
-    /// </summary>
-    /// <param name="node">The HuffmanNode to generate the code for.</param>
-    /// <param name="code">The current BitArray code.</param>
-    /// <returns>A dictionary mapping sequences to their corresponding BitArray codes.</returns>
-    private Dictionary<string, BitArray> GenerateHuffmanCode(HuffmanNode? node, BitArray? code = null)
-    {
-        var huffmanCode = new Dictionary<string, BitArray>();
-
-        if (node == null)
-        {
-            return huffmanCode;
-        }
-
-        if (code == null)
-        {
-            code = new BitArray(0);
-        }
-
-        if (node.IsLeaf)
-        {
-            huffmanCode[node.Sequence] = code;
-        }
-        else
-        {
-            if (node.Left != null)
-            {
-                var leftCode = new BitArray(code.Length + 1);
-                for (int i = 0; i < code.Length; i++)
-                {
-                    leftCode[i] = code[i];
-                }
-                leftCode[leftCode.Length - 1] = false;
-                foreach (var pair in GenerateHuffmanCode(node.Left, leftCode))
-                {
-                    huffmanCode[pair.Key] = pair.Value;
-                }
-            }
-
-            if (node.Right != null)
-            {
-                var rightCode = new BitArray(code.Length + 1);
-                for (int i = 0; i < code.Length; i++)
-                {
-                    rightCode[i] = code[i];
-                }
-                rightCode[rightCode.Length - 1] = true;
-                foreach (var pair in GenerateHuffmanCode(node.Right, rightCode))
-                {
-                    huffmanCode[pair.Key] = pair.Value;
-                }
-            }
-        }
-
-        return huffmanCode;
-    }
 }

@@ -3,7 +3,7 @@ namespace Forge.Algorithms.HuffmanCoding;
 /// <summary>
 /// Represents a node in a Huffman tree.
 /// </summary>
-public class HuffmanNode
+internal class HuffmanNode
 {
     /// <summary>
     /// Gets or sets the sequence of characters represented by this node.
