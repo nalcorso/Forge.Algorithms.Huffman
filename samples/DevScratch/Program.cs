@@ -7,7 +7,7 @@ using Forge.Algorithms.HuffmanCoding;
 
 
 Console.OutputEncoding = Encoding.UTF8;
-Console.WriteLine("Forge.Algorithms.HuffmanCoding - DevScratch");
+Console.WriteLine("Forge.Algorithms.Huffman - DevScratch");
 
 var inputString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 

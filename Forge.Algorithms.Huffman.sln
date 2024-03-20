@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{8981
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevScratch", "samples\DevScratch\DevScratch.csproj", "{20C3EF65-7AC6-4DDE-9D27-4BCAFFFEF610}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Algorithms.HuffmanCoding", "src\Forge.Algorithms.HuffmanCoding\Forge.Algorithms.HuffmanCoding.csproj", "{F22098D0-479C-4FF3-8756-3F932514D022}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Algorithms.Huffman", "src\Forge.Algorithms.Huffman\Forge.Algorithms.Huffman.csproj", "{F22098D0-479C-4FF3-8756-3F932514D022}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9ABCCD3C-5578-4ECC-A62D-9835337542BC}"
 EndProject
