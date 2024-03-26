@@ -8,7 +8,7 @@
         <RootNamespace>Forge.Algorithms.Huffman</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
-        <Version>0.1.0-beta.1</Version>
+        <Version>0.1.0-beta.2</Version>
         <Authors>Nicholas Alcorso</Authors>
         <PackageId>Forge.Algorithms.Huffman</PackageId>
         <PackageReadmeFile>README.md</PackageReadmeFile>
