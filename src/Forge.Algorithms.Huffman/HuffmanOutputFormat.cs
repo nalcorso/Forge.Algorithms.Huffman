@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Text;
 
-namespace Forge.Algorithms.HuffmanCoding;
+namespace Forge.Algorithms.Huffman;
 
 public abstract class HuffmanOutputEncoder
 {

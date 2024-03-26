@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Forge.Algorithms.HuffmanCoding;
+namespace Forge.Algorithms.Huffman;
 
 public enum HuffmanStringEncoding
 {

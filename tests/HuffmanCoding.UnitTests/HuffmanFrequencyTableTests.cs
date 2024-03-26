@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Forge.Algorithms.Huffman;
 
 namespace HuffmanCoding.UnitTests;
 

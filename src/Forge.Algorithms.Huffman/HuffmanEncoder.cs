@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Text;
 
-namespace Forge.Algorithms.HuffmanCoding;
+namespace Forge.Algorithms.Huffman;
 
 /// <summary>
 /// The HuffmanEncoder class is used for encoding and decoding strings using Huffman coding.

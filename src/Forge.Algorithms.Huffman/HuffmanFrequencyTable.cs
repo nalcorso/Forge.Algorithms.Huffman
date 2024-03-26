@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Text.Json;
 
-namespace Forge.Algorithms.HuffmanCoding;
+namespace Forge.Algorithms.Huffman;
 
 /// <summary>
 /// Represents a frequency table for Huffman coding, which is a dictionary mapping symbols to their frequencies.
