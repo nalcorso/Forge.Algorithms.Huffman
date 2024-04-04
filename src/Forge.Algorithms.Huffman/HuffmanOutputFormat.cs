@@ -83,7 +83,7 @@ public abstract class HuffmanOutputEncoder
         }
     }
     
-    private static byte[] ToBytes(BitArray bitArray)
+    internal static byte[] ToBytes(BitArray bitArray)
     {
         if (bitArray.Length % 8 != 0)
             throw new ArgumentException("BitArray length must be multiple of 8", nameof(bitArray));

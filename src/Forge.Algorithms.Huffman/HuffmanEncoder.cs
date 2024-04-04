@@ -29,7 +29,42 @@ public static class HuffmanEncoder
             _ => throw new ArgumentOutOfRangeException(nameof(options))
         };
     }
-
+    
+    /// <summary>
+    /// Encodes a string into a typed representation using Huffman coding.
+    /// </summary>
+    /// <param name="input">The string to encode.</param>
+    /// <param name="options">The options to use for encoding.</param>
+    /// <typeparam name="T">The type of the output encoding.</typeparam>
+    /// <returns>The encoded string as the specified type.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static T EncodeAs<T>(string input, HuffmanEncoderOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(input, nameof(input));
+        
+        var templateImpliedEncoding = typeof(T) switch
+        {
+            Type t when t == typeof(BitArray) => HuffmanStringEncoding.Bin,
+            Type t when t == typeof(byte[]) => HuffmanStringEncoding.Hex,
+            Type t when t == typeof(string) => HuffmanStringEncoding.Base64,
+            _ => throw new ArgumentOutOfRangeException(nameof(T))
+        };
+        options ??= new HuffmanEncoderOptions() { OutputEncoding = templateImpliedEncoding };
+        
+        if (options.OutputEncoding != templateImpliedEncoding)
+            throw new ArgumentException("The specified output encoding does not match the type of the output.");
+        
+        var encodedBits = EncodeBitArray(input, options);
+        return templateImpliedEncoding switch
+        {
+            HuffmanStringEncoding.Bin => (T)(object)encodedBits,
+            HuffmanStringEncoding.Hex => (T)(object)HuffmanOutputEncoder.ToBytes(encodedBits),
+            HuffmanStringEncoding.Base64 => (T)(object)HuffmanOutputEncoder.Base64.Encode(encodedBits),
+            _ => throw new InvalidOperationException("The specified output encoding is not supported.")
+        };
+    }
 
     /// <summary>
     /// Decodes a byte array into a string using Huffman coding.
