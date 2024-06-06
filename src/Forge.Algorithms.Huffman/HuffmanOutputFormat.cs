@@ -16,25 +16,20 @@ public abstract class HuffmanOutputEncoder
     {
         public override string Encode(BitArray input)
         {
-            return HuffmanOutputEncoder.Hex.Encode(input);
+            var encoder = HuffmanOutputEncoder.Hex;
+            return encoder.Encode(input);
         }
 
         public override BitArray Decode(string input)
         {
-            // If the string is a valid binary string, decode it as binary.
-            if (input.All(c => c == '0' || c == '1'))
+            var encoding = HuffmanEncodingHelper.DetectEncoding(input);
+            return encoding switch
             {
-                return HuffmanOutputEncoder.Bin.Decode(input);
-            }
-            
-            // If the input is a valid hex string, decode it as hex.
-            if (input.All(c => (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f')))
-            {
-                return HuffmanOutputEncoder.Hex.Decode(input);
-            }
-            
-            // Otherwise, decode it as base64.
-            return HuffmanOutputEncoder.Base64.Decode(input);
+                HuffmanEncodingHelper.EncodingType.Bin => HuffmanOutputEncoder.Bin.Decode(input),
+                HuffmanEncodingHelper.EncodingType.Hex => HuffmanOutputEncoder.Hex.Decode(input),
+                HuffmanEncodingHelper.EncodingType.Base64 => HuffmanOutputEncoder.Base64.Decode(input),
+                _ => throw new ArgumentException("Unknown encoding type", nameof(input))
+            };
         }
     }
 
