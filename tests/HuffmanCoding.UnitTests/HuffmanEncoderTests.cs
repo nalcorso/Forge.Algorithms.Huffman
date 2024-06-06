@@ -1,6 +1,4 @@
-﻿using Forge.Algorithms.Huffman;
-
-namespace HuffmanCoding.UnitTests;
+﻿namespace HuffmanCoding.UnitTests;
 
 public class HuffmanEncoderTests
 {
