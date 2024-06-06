@@ -218,7 +218,7 @@ public static class HuffmanEncoder
 
         foreach (bool bit in input)
         {
-            currentNode = bit ? currentNode.Right : currentNode.Left;
+            currentNode = bit ? currentNode!.Right : currentNode!.Left;
 
             if (currentNode is not null && currentNode.IsLeaf)
             {
