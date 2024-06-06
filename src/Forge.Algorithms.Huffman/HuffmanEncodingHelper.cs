@@ -20,6 +20,11 @@ public static class HuffmanEncodingHelper
     /// of Bin, Hex, Base64, Unknown.</remarks>
     public static EncodingType DetectEncoding(string input)
     {
+        if (string.IsNullOrEmpty(input))
+        {
+            return EncodingType.Unknown;
+        }
+        
         if (input.All(c => c == '0' || c == '1'))
         {
             return EncodingType.Bin;
