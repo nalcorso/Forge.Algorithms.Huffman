@@ -2,6 +2,7 @@
 
 public static class HuffmanEncodingHelper
 {
+    //FIXME: Replace this with HuffmanStringEncoding if the unknown encoding type is not needed.
     public enum EncodingType
     {
         Unknown,
