@@ -75,6 +75,13 @@ public static class HuffmanEncoder
     /// <returns>The decoded string.</returns>
     public static string Decode(string input, HuffmanEncoderOptions? options = null)
     {
+        ArgumentNullException.ThrowIfNull(input, nameof(input));
+        
+        if (input.Length == 0)
+        {
+            return string.Empty;
+        }
+        
         options ??= new HuffmanEncoderOptions();
 
         var encodedBits = options.InputEncoding switch
