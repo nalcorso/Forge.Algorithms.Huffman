@@ -11,6 +11,18 @@ public abstract class HuffmanOutputEncoder
 
     public abstract string Encode(BitArray input);
     public abstract BitArray Decode(string input);
+    
+    public static HuffmanOutputEncoder GetEncoder(HuffmanStringEncoding encoding)
+    {
+        return encoding switch
+        {
+            HuffmanStringEncoding.Auto => Auto,
+            HuffmanStringEncoding.Bin => Bin,
+            HuffmanStringEncoding.Hex => Hex,
+            HuffmanStringEncoding.Base64 => Base64,
+            _ => throw new ArgumentOutOfRangeException(nameof(encoding))
+        };
+    }
 
     private sealed class AutoFormat : HuffmanOutputEncoder
     {
