@@ -92,10 +92,11 @@ public abstract class HuffmanOutputEncoder
     
     internal static byte[] ToBytes(BitArray bitArray)
     {
-        if (bitArray.Length % 8 != 0)
-            throw new ArgumentException("BitArray length must be multiple of 8", nameof(bitArray));
-
-        var bytes = new byte[bitArray.Length / 8];
+        var numBytes = (bitArray.Length + 7) / 8;
+        // if (bitArray.Length % 8 != 0)
+        //     throw new ArgumentException("BitArray length must be multiple of 8", nameof(bitArray));
+        //
+        var bytes = new byte[numBytes];
         bitArray.CopyTo(bytes, 0);
         
         return bytes;
