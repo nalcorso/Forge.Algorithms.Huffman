@@ -11,9 +11,25 @@ To install the Forge.Algorithms.Huffman library, you can download the source cod
 Here is a basic example of how to use the Forge.Algorithms.Huffman library:
 
 ```csharp
-using ReForge.Huffman;
+using Forge.Algorithms.Huffman;
 
-// ...
+// Encode using the default Huffman encoder
+var encoded = HuffmanEncoder.Encode(inputString);
+
+// Encode using custom encoding parameters
+var encoded = HuffmanEncoder.Encode(inputString, new HuffmanEncoderOptions()
+{
+    OutputEncoding = HuffmanStringEncoding.Base64
+});
+
+// Decode using the default Huffman decoder
+var decoded = HuffmanDecoder.Decode(encoded);
+
+// Decode using custom decoding parameters
+var decoded = HuffmanDecoder.Decode(encoded, new HuffmanDecoderOptions()
+{
+    InputEncoding = HuffmanStringEncoding.Base64
+});
 ```
 
 ## Documentation
